@@ -66,10 +66,22 @@ app.get('/flowers', async (req, res) => {
   }
 });
 
-// Start the server on the specified port, or default to port 3001
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`); // Log message indicating server is running
+// Define endpoint to handle form submissions
+app.post('/form_submissions', async (req, res) => {
+  try {
+    const { firstname, email, phone } = req.body;
+    await db('form_submissions').insert({ firstname, email, phone });
+    res.status(201).json({ message: 'Form submission successful' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-module.exports = app; // Export the app module for use in other files
+
+
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`); 
+});
+
+module.exports = app; 
