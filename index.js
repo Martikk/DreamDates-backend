@@ -78,6 +78,35 @@ app.post('/form_submissions', async (req, res) => {
   }
 });
 
+// Define endpoint to get all reviews
+app.get('/reviews', async (req, res) => {
+  try {
+    const reviews = await db('reviews').select('*');
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Define endpoint to handle form submissions
+app.post('/reviews', async (req, res) => {
+  try {
+    const { name, email, professional, comments } = req.body;
+    await db('reviews').insert({ 
+      name, 
+      email, 
+      professional, 
+      comments, 
+      platform: 'Website',
+      avatar: 'https://res.cloudinary.com/dzytbkc5l/image/upload/v1717317138/DreamDate/iconavatar_qpt2h1.png' 
+    });
+    res.status(201).json({ message: 'Review submission successful' });
+  } catch (error) {
+    console.error("Error submitting review:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`); 
