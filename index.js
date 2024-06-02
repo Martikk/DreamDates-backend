@@ -1,32 +1,22 @@
 require('dotenv').config();
-
 const express = require('express');
-
 const cors = require('cors');
-
 const knex = require('knex');
-
 const bodyParser = require('body-parser');
 
-
 const db = knex({
-  client: 'mysql2', 
+  client: 'mysql2',
   connection: {
-    host: process.env.DB_HOST, 
-    user: process.env.DB_USER, 
-    password: process.env.DB_PASSWORD, 
-    database: process.env.DB_NAME 
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
   }
 });
 
 const app = express();
-
-// Use CORS middleware to enable Cross-Origin Resource Sharing for all routes
 app.use(cors());
-
-// Use body-parser middleware to parse JSON request bodies
 app.use(bodyParser.json());
-
 
 // Define endpoint to get all experiences
 app.get('/experiences', async (req, res) => {
