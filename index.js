@@ -69,15 +69,14 @@ app.get('/flowers', async (req, res) => {
 // Define endpoint to handle form submissions
 app.post('/form_submissions', async (req, res) => {
   try {
-    const { firstname, email, phone } = req.body;
-    await db('form_submissions').insert({ firstname, email, phone });
+    const { firstname, email, phone, message } = req.body;
+    await db('form_submissions').insert({ firstname, email, phone, message });
     res.status(201).json({ message: 'Form submission successful' });
   } catch (error) {
+    console.error("Error submitting form:", error);
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
