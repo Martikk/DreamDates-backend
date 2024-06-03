@@ -21,48 +21,48 @@ app.use(bodyParser.json());
 // Define endpoint to get all experiences
 app.get('/experiences', async (req, res) => {
   try {
-    const experiences = await db('experiences').select('*'); // Query all records from experiences table
-    res.json(experiences); // Send records as JSON response
+    const experiences = await db('experiences').select('*');
+    res.json(experiences);
   } catch (error) {
-    res.status(500).json({ error: error.message }); // Send error response if query fails
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Define endpoint to get a specific experience by ID, along with social links and contact info
 app.get('/experiences/:id', async (req, res) => {
   try {
-    const { id } = req.params; // Extract experience ID from request parameters
-    const experience = await db('experiences').where({ id }).first(); // Query specific experience record
-    const socialLinks = await db('social_links').select('*'); // Query all records from social_links table
-    const contactInfo = await db('contact_info').select('*'); // Query all records from contact_info table
+    const { id } = req.params;
+    const experience = await db('experiences').where({ id }).first();
+    const socialLinks = await db('social_links').select('*');
+    const contactInfo = await db('contact_info').select('*');
 
     if (experience) {
-      res.json({ experience, socialLinks, contactInfo }); // Send combined data as JSON response
+      res.json({ experience, socialLinks, contactInfo });
     } else {
-      res.status(404).json({ error: 'Experience not found' }); // Send 404 response if experience not found
+      res.status(404).json({ error: 'Experience not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message }); // Send error response if query fails
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Define endpoint to get all categories
 app.get('/categories', async (req, res) => {
   try {
-    const categories = await db('categories').select('*'); // Query all records from categories table
-    res.json(categories); // Send records as JSON response
+    const categories = await db('categories').select('*');
+    res.json(categories);
   } catch (error) {
-    res.status(500).json({ error: error.message }); // Send error response if query fails
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Define endpoint to get all flowers
 app.get('/flowers', async (req, res) => {
   try {
-    const flowers = await db('flowers').select('*'); // Query all records from flowers table
-    res.json(flowers); // Send records as JSON response
+    const flowers = await db('flowers').select('*');
+    res.json(flowers);
   } catch (error) {
-    res.status(500).json({ error: error.message }); // Send error response if query fails
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -92,13 +92,13 @@ app.get('/reviews', async (req, res) => {
 app.post('/reviews', async (req, res) => {
   try {
     const { name, email, professional, comments } = req.body;
-    await db('reviews').insert({ 
-      name, 
-      email, 
-      professional, 
-      comments, 
+    await db('reviews').insert({
+      name,
+      email,
+      professional,
+      comments,
       platform: 'Website',
-      avatar: 'https://res.cloudinary.com/dzytbkc5l/image/upload/v1717317138/DreamDate/iconavatar_qpt2h1.png' 
+      avatar: 'https://res.cloudinary.com/dzytbkc5l/image/upload/v1717317138/DreamDate/iconavatar_qpt2h1.png'
     });
     res.status(201).json({ message: 'Review submission successful' });
   } catch (error) {
@@ -109,7 +109,7 @@ app.post('/reviews', async (req, res) => {
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`); 
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
-module.exports = app; 
+module.exports = app;
