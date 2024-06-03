@@ -7,9 +7,6 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "engines": {
-    "node": "14.x"
-  },
   "dependencies": {
     "cloudinary": "^1.41.3",
     "axios": "^1.7.2",
