@@ -18,6 +18,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Root route to confirm server is running
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
 // Define endpoint to get all experiences
 app.get('/experiences', async (req, res) => {
   try {
