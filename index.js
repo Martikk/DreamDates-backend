@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const knex = require('knex');
 const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
 
 const db = knex({
   client: 'mysql2',
@@ -21,15 +20,6 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 const apiKey = process.env.API_KEY;
-
-// Configure Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail', // You can use any email service
-  auth: {
-    user: process.env.EMAIL_USER, // Your email
-    pass: process.env.EMAIL_PASS  // Your email password
-  }
-});
 
 // Middleware to check API key
 const checkApiKey = (req, res, next) => {
@@ -99,20 +89,6 @@ app.post('/form_submissions', checkApiKey, async (req, res) => {
   try {
     const { firstname, email, phone, message } = req.body;
     await db('form_submissions').insert({ firstname, email, phone, message });
-
-    // Send notification email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.NOTIFICATION_EMAIL, // Your notification email address
-      subject: 'New Contact Form Submission',
-      text: `You have a new contact form submission from ${firstname} (${email}).
-      
-      Phone: ${phone}
-      Message: ${message}`
-    };
-
-    await transporter.sendMail(mailOptions);
-
     res.status(201).json({ message: 'Form submission successful' });
   } catch (error) {
     console.error("Error submitting form:", error);
@@ -154,4 +130,4 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`); 
 });
 
-module.exports = app;
+module.exports = app; 
