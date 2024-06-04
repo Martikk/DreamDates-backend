@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const knex = require('knex');
 const bodyParser = require('body-parser');
-const emailjs = require('emailjs-com');
+const nodemailer = require('nodemailer');
 
 const db = knex({
   client: 'mysql2',
@@ -21,6 +21,15 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 const apiKey = process.env.API_KEY;
+
+// Configure Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or any other email service
+  auth: {
+    user: process.env.EMAIL_USER, // Your email address
+    pass: process.env.EMAIL_PASS  // Your email password or application-specific password
+  }
+});
 
 // Middleware to check API key
 const checkApiKey = (req, res, next) => {
@@ -91,26 +100,18 @@ app.post('/form_submissions', checkApiKey, async (req, res) => {
     const { firstname, email, phone, message } = req.body;
     await db('form_submissions').insert({ firstname, email, phone, message });
 
-    // Send notification email using EmailJS
-    const emailParams = {
-      firstname,
-      email,
-      phone,
-      message
+    // Send notification email using Nodemailer
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.NOTIFICATION_EMAIL, // Your notification email address
+      subject: 'New Contact Form Submission',
+      text: `You have a new contact form submission from ${firstname} (${email}).
+      
+      Phone: ${phone}
+      Message: ${message}`
     };
 
-    const serviceId = process.env.EMAILJS_SERVICE_ID;
-    const templateId = process.env.EMAILJS_TEMPLATE_ID;
-    const publicKey = process.env.EMAILJS_PUBLIC_KEY;
-
-    emailjs.init(publicKey);
-    emailjs.send(serviceId, templateId, emailParams)
-      .then(response => {
-        console.log('Email sent successfully!', response.status, response.text);
-      })
-      .catch(error => {
-        console.error('Error sending email:', error);
-      });
+    await transporter.sendMail(mailOptions);
 
     res.status(201).json({ message: 'Form submission successful' });
   } catch (error) {
