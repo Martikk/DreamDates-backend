@@ -17,14 +17,27 @@ const db = knex({
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
-// Root route to confirm server is running
+const apiKey = process.env.API_KEY;
+
+// Middleware to check API key
+const checkApiKey = (req, res, next) => {
+  const userApiKey = req.headers['x-api-key'];
+  if (userApiKey && userApiKey === apiKey) {
+    next();
+  } else {
+    res.status(403).json({ error: 'Forbidden: Invalid API Key' });
+  }
+};
+
+// Root route to confirm server is running and serve index.html
 app.get('/', (req, res) => {
-  res.send('Server is running');
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 // Define endpoint to get all experiences
-app.get('/experiences', async (req, res) => {
+app.get('/experiences', checkApiKey, async (req, res) => {
   try {
     const experiences = await db('experiences').select('*'); // Query all records from experiences table
     res.json(experiences); // Send records as JSON response
@@ -34,7 +47,7 @@ app.get('/experiences', async (req, res) => {
 });
 
 // Define endpoint to get a specific experience by ID, along with social links and contact info
-app.get('/experiences/:id', async (req, res) => {
+app.get('/experiences/:id', checkApiKey, async (req, res) => {
   try {
     const { id } = req.params; // Extract experience ID from request parameters
     const experience = await db('experiences').where({ id }).first(); // Query specific experience record
@@ -52,7 +65,7 @@ app.get('/experiences/:id', async (req, res) => {
 });
 
 // Define endpoint to get all categories
-app.get('/categories', async (req, res) => {
+app.get('/categories', checkApiKey, async (req, res) => {
   try {
     const categories = await db('categories').select('*'); // Query all records from categories table
     res.json(categories); // Send records as JSON response
@@ -62,7 +75,7 @@ app.get('/categories', async (req, res) => {
 });
 
 // Define endpoint to get all flowers
-app.get('/flowers', async (req, res) => {
+app.get('/flowers', checkApiKey, async (req, res) => {
   try {
     const flowers = await db('flowers').select('*'); // Query all records from flowers table
     res.json(flowers); // Send records as JSON response
@@ -72,7 +85,7 @@ app.get('/flowers', async (req, res) => {
 });
 
 // Define endpoint to handle form submissions
-app.post('/form_submissions', async (req, res) => {
+app.post('/form_submissions', checkApiKey, async (req, res) => {
   try {
     const { firstname, email, phone, message } = req.body;
     await db('form_submissions').insert({ firstname, email, phone, message });
@@ -84,7 +97,7 @@ app.post('/form_submissions', async (req, res) => {
 });
 
 // Define endpoint to get all reviews
-app.get('/reviews', async (req, res) => {
+app.get('/reviews', checkApiKey, async (req, res) => {
   try {
     const reviews = await db('reviews').select('*');
     res.json(reviews);
@@ -94,7 +107,7 @@ app.get('/reviews', async (req, res) => {
 });
 
 // Define endpoint to handle review submissions
-app.post('/reviews', async (req, res) => {
+app.post('/reviews', checkApiKey, async (req, res) => {
   try {
     const { name, email, professional, comments } = req.body;
     await db('reviews').insert({ 

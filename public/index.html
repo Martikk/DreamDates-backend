@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Dates API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .endpoint {
+            background-color: #e7f3e7;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dream Dates API</h1>
+        <p>Welcome to the Dream Dates API. This API allows you to manage and retrieve information about various experiences, categories, flowers, and reviews. It also enables users to submit forms and reviews.</p>
+
+        <h2>Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3>Get All Experiences</h3>
+            <p><code>GET /experiences</code></p>
+            <p>Retrieve a list of all experiences.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Get Experience by ID</h3>
+            <p><code>GET /experiences/:id</code></p>
+            <p>Retrieve details of a specific experience by its ID.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Get All Categories</h3>
+            <p><code>GET /categories</code></p>
+            <p>Retrieve a list of all categories.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Get All Flowers</h3>
+            <p><code>GET /flowers</code></p>
+            <p>Retrieve a list of all flowers.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Submit a Form</h3>
+            <p><code>POST /form_submissions</code></p>
+            <p>Submit a form with details such as name, email, phone, and message.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Get All Reviews</h3>
+            <p><code>GET /reviews</code></p>
+            <p>Retrieve a list of all reviews.</p>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Submit a Review</h3>
+            <p><code>POST /reviews</code></p>
+            <p>Submit a review with details such as name, email, professional rating, and comments.</p>
+        </div>
+
+        <h2>Authentication</h2>
+        <p>All endpoints require an API key to be included in the request headers. Use the <code>x-api-key</code> header to provide your API key.</p>
+        
+        <h2>Example</h2>
+        <p>Here is an example of how to make a request to get all experiences:</p>
+        <pre><code>
+curl -H "x-api-key: YOUR_API_KEY" https://your-backend.herokuapp.com/experiences
+        </code></pre>
+
+        <h2>Contact</h2>
+        <p>If you have any questions or need further assistance, please contact our support team at <a href="mailto:support@dreamdates.com">support@dreamdates.com</a>.</p>
+    </div>
+</body>
+</html>
