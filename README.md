@@ -1,6 +1,15 @@
 # Dream Dates Backend
 
 This is the backend for the Dream Dates application, providing APIs for experiences, categories, flowers, form submissions, and reviews.
+Visit the live api: [Dreamy Dates API](https://dreamydates-7102c8296fc9.herokuapp.com).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./Assets/api_1.png">
+  <source media="(prefers-color-scheme: light)" srcset="./Assets/api_1.png">
+  <img alt="Dreamy Dates Website" srcset="./Assets/api_1.png">
+</picture>
+
+
 
 ## Table of Contents
 
@@ -13,6 +22,12 @@ This is the backend for the Dream Dates application, providing APIs for experien
   - [Reviews](#reviews)
 - [Database Setup](#database-setup)
 - [Running the Application](#running-the-application)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./Assets/data_1.png">
+  <source media="(prefers-color-scheme: light)" srcset="./Assets/data_1.png">
+  <img alt="Dreamy Dates Website" srcset="./Assets/data_1.png">
+</picture>
 
 ## Getting Started
 
@@ -184,6 +199,66 @@ This is the backend for the Dream Dates application, providing APIs for experien
 {
   "message": "Review submission successful"
 }
+```
+
+# Nodemailer Integration
+We have integrated Nodemailer for email notifications. Now, every time a user submits a form on our site, their information is not only stored in our database but also triggers an email notification directly to our team.
+
+## How It Works
+When a form submission occurs, an email is sent using Nodemailer with the details provided in the form. This ensures that we stay updated with user inquiries in real-time.
+
+
+### Configuring Nodemailer
+1. Install Nodemailer:
+```
+npm install nodemailer
+```
+2. Update your .env file with your email credentials:
+```
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+NOTIFICATION_EMAIL=your-notification-email@gmail.com
+```
+3. Configure the Nodemailer transporter in your server code:
+```
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+```
+4. Send an email notification on form submission:
+```
+app.post('/form_submissions', checkApiKey, async (req, res) => {
+  try {
+    const { firstname, email, phone, message } = req.body;
+    await db('form_submissions').insert({ firstname, email, phone, message });
+
+    // Send notification email using Nodemailer
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.NOTIFICATION_EMAIL,
+      subject: 'New Contact Form Submission',
+      text: `You have a new contact form submission from ${firstname} (${email}).
+
+      Phone: ${phone}
+      Message: ${message}`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({ message: 'Form submission successful' });
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 ```
 
 ### Database Setup
