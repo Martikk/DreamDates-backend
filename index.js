@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const knex = require('knex');
 const bodyParser = require('body-parser');
+const emailjs = require('emailjs-com');
 
 const db = knex({
   client: 'mysql2',
@@ -89,6 +90,28 @@ app.post('/form_submissions', checkApiKey, async (req, res) => {
   try {
     const { firstname, email, phone, message } = req.body;
     await db('form_submissions').insert({ firstname, email, phone, message });
+
+    // Send notification email using EmailJS
+    const emailParams = {
+      firstname,
+      email,
+      phone,
+      message
+    };
+
+    const serviceId = process.env.EMAILJS_SERVICE_ID;
+    const templateId = process.env.EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.EMAILJS_PUBLIC_KEY;
+
+    emailjs.init(publicKey);
+    emailjs.send(serviceId, templateId, emailParams)
+      .then(response => {
+        console.log('Email sent successfully!', response.status, response.text);
+      })
+      .catch(error => {
+        console.error('Error sending email:', error);
+      });
+
     res.status(201).json({ message: 'Form submission successful' });
   } catch (error) {
     console.error("Error submitting form:", error);
@@ -130,4 +153,4 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`); 
 });
 
-module.exports = app; 
+module.exports = app;
